@@ -23,40 +23,62 @@ public class User {
 		if (amount > 0) {
 			this.balance += amount;
 			this.previousTransaction = amount;
+			System.out.println();
 			System.out.println("Deposited $" + amount);
 			System.out.printf("Balance: $%.2f", this.balance);
 			System.out.println();
 		} else {
+			System.out.println();
 			System.out.println("The money is invalid");
 			System.out.printf("Balance: $%.2f", this.balance);
+			System.out.println();
+			System.out.println("How much would you like to deposit?");
 			System.out.println();
 		}
 	}
 
 	void withdrawl(int amount) {
-		if (amount > 0 && this.balance > amount) {
+		if (this.balance == 0) {
+			System.out.println();
+			System.out.println("Your account doesn't have enough balace to withdraw money");
+			System.out.printf("Balance: $%.2f", this.balance);
+			System.out.println();
+			System.out.println();
+		} else if (amount > 0 && this.balance >= amount) {
 			this.balance -= amount;
 			this.previousTransaction = -amount;
+			System.out.println();
 			System.out.println("Withdrew $" + amount);
 			System.out.printf("Balance: $%.2f", this.balance);
+			System.out.println();
+			System.out.println();
 		} else if (amount > 0) {
+			System.out.println();
 			System.out.println("Not enough balance");
 			System.out.printf("Balance: $%.2f", this.balance);
+			System.out.println();
+			System.out.println("How much would you like to withdraw?");
 		} else {
+			System.out.println();
 			System.out.println("The money is invalid");
 			System.out.printf("Balance: $%.2f", this.balance);
+			System.out.println();
+			System.out.println("How much would you like to withdraw?");
 			System.out.println();
 		}
 	}
 
 	void getPreviousTransaction() {
 		if (this.previousTransaction > 0) {
+			System.out.println();
 			System.out.println("Deposited $" + previousTransaction);
 			System.out.println();
 		} else if (this.previousTransaction < 0) {
+			System.out.println();
 			System.out.println("Withdrawn $" + -previousTransaction);
 			System.out.println();
 		} else {
+			System.out.println();
 			System.out.println("No previous transactions.");
 			System.out.println();
 		}
@@ -81,7 +103,9 @@ public class User {
 
 			while (userOption != 'E') {
 				System.out.println();
+				System.out.println();
 				System.out.println("Which would you like to do?");
+				System.out.println();
 
 				userOption = Character.toUpperCase(scanner.next().charAt(0));
 
@@ -94,22 +118,32 @@ public class User {
 					System.out.println();
 					System.out.println("How much would you like to deposit?");
 					System.out.println();
-					int depoAmount = scanner.nextInt();
-					deposit(depoAmount);
+					int depoAmount = 0;
+					while (depoAmount <= 0) {
+						depoAmount = scanner.nextInt();
+						deposit(depoAmount);
+					}
 					break;
 				case 'C':
+					System.out.println();
 					System.out.println("How much would you like to withdraw?");
 					System.out.println();
-					int withAmount = scanner.nextInt();
-					withdrawl(withAmount);
+					int withAmount = -1;
+					int currentBalance = (int) this.balance;
+					while (withAmount < 0 || (withAmount > currentBalance && currentBalance > 0)) {
+						withAmount = scanner.nextInt();
+						withdrawl(withAmount);
+					}
 					break;
 				case 'D':
 					getPreviousTransaction();
 					break;
 				case 'E':
+					System.out.println();
 					System.out.println("Thank you using our service! Have a wonderful day!");
 					break;
 				default:
+					System.out.println();
 					System.out.println("Error: invalid option, please enter A, B, C, D or E");
 				}
 
