@@ -12,6 +12,7 @@ public class User {
 	private String previousTransactionAction;
 	private int numTransaction;
 	private boolean hasHistory;
+	private String password;
 
 	public User(String name) {
 		this.name = name;
@@ -19,16 +20,47 @@ public class User {
 		hasHistory = false;
 	}
 
-	public User(String name, int userID, double balance, int numTransaction) {
+	public User(String name, int userID, double balance, int numTransaction, String password) {
 		this.name = name;
 		this.userID = userID;
 		this.balance = balance;
 		this.numTransaction = numTransaction;
-		hasHistory = true;
+		this.hasHistory = true;
+		this.password = password;
 	}
 
 	public int getNumTransaction() {
 		return this.numTransaction;
+	}
+
+	public void setPassword() {
+		Scanner scanner = new Scanner(System.in);
+		while (true) {
+			String password = scanner.nextLine();
+			if (password.length() >= 8 && password.length() < 16) {
+				this.password = password;
+				break;
+			} else {
+				System.out.println();
+				System.out.println("Make sure your password is between 8 to 15 digits long");
+				System.out.println();
+			}
+		}
+	}
+
+	public void enterPassword() {
+		Scanner scanner = new Scanner(System.in);
+		int counter = 0;
+		while (true) {
+			String password = scanner.nextLine();
+			if (password.equals(this.password)) {
+				break;
+			} else {
+				System.out.println();
+				System.out.println("wrong password");
+				System.out.println();
+			}
+		}
 	}
 
 	void checkBalance() {
@@ -66,11 +98,13 @@ public class User {
 	void getPreviousTransaction() {
 		if (this.previousTransactionAmount > 0) {
 			System.out.println();
-			System.out.println("Deposited $" + previousTransactionAmount + ", your balance is " + this.balance);
+			System.out.println("Deposited $" + previousTransactionAmount);
+			System.out.printf("Balance: $%.2f", this.balance);
 			System.out.println();
 		} else if (this.previousTransactionAmount < 0) {
 			System.out.println();
-			System.out.println("Withdrawn $" + -previousTransactionAmount + ", your balance is " + this.balance);
+			System.out.println("Withdrawn $" + -previousTransactionAmount);
+			System.out.printf("Balance: $%.2f", this.balance);
 			System.out.println();
 		} else {
 			System.out.println();
@@ -81,22 +115,44 @@ public class User {
 
 	void showMainScreen(int time) throws IOException {
 		try (Scanner scanner = new Scanner(System.in)) {
+			char userOption = '\0';
+
+			if (time >= 0 && time <= 11) {
+				System.out.println();
+				System.out.println("Good morning, " + this.name.substring(0, this.name.indexOf(" ")) + "!");
+			} else if (time < 18) {
+				System.out.println();
+				System.out.println("Good afternoon, " + this.name.substring(0, this.name.indexOf(" ")) + "!");
+			} else {
+				System.out.println();
+				System.out.println("Good evening, " + this.name.substring(0, this.name.indexOf(" ")) + "!");
+			}
+			System.out.println("Your user ID is " + this.userID + ".");
+
+			if (this.hasHistory == false) {
+				System.out.println();
+				System.out.println(
+						"This is your first time here, please set your password.\nYour password should be between 8 to 15 digits long.");
+				System.out.println();
+				setPassword();
+				System.out.println();
+				System.out.println("Your new password is set");
+				System.out.println();
+			} else {
+				System.out.println();
+				System.out.println("Welcome back, please enter your pass word to access your bank account.");
+				System.out.println();
+				enterPassword();
+				System.out.println();
+			}
+
 			if (this.hasHistory == false) {
 				makeInitialFileFromGame();
 			} else {
 				continueWriting();
 			}
-
-			char userOption = '\0';
-
-			if (time >= 0 && time <= 11) {
-				System.out.println("Good morning, " + this.name.substring(0, this.name.indexOf(" ")) + "!");
-			} else if (time < 18) {
-				System.out.println("Good afternoon, " + this.name.substring(0, this.name.indexOf(" ")) + "!");
-			} else {
-				System.out.println("Good evening, " + this.name.substring(0, this.name.indexOf(" ")) + "!");
-			}
-			System.out.println("Your user ID is " + this.userID + ".");
+			System.out.println("________________________________________________________");
+			System.out.println();
 			System.out.println("How can we help you today?");
 			System.out.println();
 			System.out.println("A. See my account balance");
@@ -111,6 +167,7 @@ public class User {
 
 			while (userOption != 'E') {
 				System.out.println();
+				System.out.println("________________________________________________________");
 				System.out.println();
 				System.out.println("Which would you like to do?");
 				System.out.println();
@@ -133,6 +190,11 @@ public class User {
 							if (depoAmount > 0) {
 								deposit(depoAmount);
 								break;
+							} else if (depoAmount == 0) {
+								System.out.println();
+								System.out.println("You can not deposit $0, please try again with a valid value");
+								System.out.printf("Balance: $%.2f", this.balance);
+								System.out.println();
 							} else {
 								System.out.println();
 								System.out
@@ -171,6 +233,11 @@ public class User {
 								System.out.println("Not enough balance");
 								System.out.printf("Balance: $%.2f", this.balance);
 								System.out.println();
+							} else if (withAmount == 0) {
+								System.out.println();
+								System.out.println("You can not withdraw $0, please try again with a valid value");
+								System.out.printf("Balance: $%.2f", this.balance);
+								System.out.println();
 							} else {
 								System.out.println();
 								System.out
@@ -205,6 +272,7 @@ public class User {
 		FileWriter writer = new FileWriter("/Users/dongh/OneDrive/Desktop/history.txt");
 		writer.write("ATM simulator history of the user " + this.name + "\n");
 		writer.write("User ID of " + this.name + " is " + this.userID);
+		writer.write("\nThe user's pin " + this.name + " is " + this.password + ".");
 		writer.close();
 	}
 

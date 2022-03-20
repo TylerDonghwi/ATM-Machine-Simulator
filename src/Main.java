@@ -8,14 +8,16 @@ import java.util.Scanner;
 public class Main {
 
 	public static void main(String[] args) throws IOException {
-
-		User account1 = new User("Tyler Kim");
+		// get time of the day
 		int time = getHourOfDay();
 
-		// User account1 = new User(readNameFromFile(), readIDFromFile(),
-		// readBalanceFromFile(),
-		// readNumTransactionFromFile());
-		account1.showMainScreen(time);
+		// User account1 = new User("Tyler Kim");
+
+		User account2 = new User(readNameFromFile(), readIDFromFile(), readBalanceFromFile(),
+				readNumTransactionFromFile(), readPasswordFromFile());
+
+		// account1.showMainScreen(time);
+		account2.showMainScreen(time);
 	}
 
 	public static int getHourOfDay() {
@@ -79,6 +81,19 @@ public class Main {
 			}
 
 			return counter;
+		}
+	}
+
+	public static String readPasswordFromFile() throws FileNotFoundException {
+
+		File file = new File("/Users/dongh/OneDrive/Desktop/history.txt");
+		try (Scanner scan = new Scanner(file)) {
+
+			String password = scan.nextLine();
+			password = scan.nextLine();
+			password = scan.nextLine();
+			password = password.substring(28, password.length() - 1);
+			return password;
 		}
 	}
 }
