@@ -14,11 +14,13 @@ public class User {
 	private boolean hasHistory;
 	private String password;
 
+	// new account will have no history with a randomly generated userID.
 	public User() {
 		this.userID = (int) (10000000 * Math.random());
 		hasHistory = false;
 	}
 
+	// existing account will have instances extracted from the existing file
 	public User(String name, int userID, double balance, int numTransaction, String password) {
 		this.name = name;
 		this.userID = userID;
@@ -28,6 +30,7 @@ public class User {
 		this.password = password;
 	}
 
+	// for a new account, setting a name.
 	public void setName() {
 		Scanner scanner = new Scanner(System.in);
 		while (true) {
@@ -47,10 +50,7 @@ public class User {
 		}
 	}
 
-	public int getNumTransaction() {
-		return this.numTransaction;
-	}
-
+	// for a new account, setting a password
 	public void setPassword() {
 		Scanner scanner = new Scanner(System.in);
 		while (true) {
@@ -66,6 +66,8 @@ public class User {
 		}
 	}
 
+	// for an existing account, entering the password and making sure that it is
+	// correct
 	public void enterPassword() {
 		Scanner scanner = new Scanner(System.in);
 		while (true) {
@@ -80,6 +82,7 @@ public class User {
 		}
 	}
 
+	// checking the account balance
 	void checkBalance() {
 		System.out.println("Checking the balance in your account:");
 		System.out.println("User ID: " + this.userID);
@@ -87,6 +90,7 @@ public class User {
 		System.out.println();
 	}
 
+	// making a deposit
 	void deposit(int amount) throws IOException {
 		this.balance += amount;
 		this.previousTransactionAmount = amount;
@@ -100,6 +104,7 @@ public class User {
 
 	}
 
+	// making a withdrawl
 	void withdrawl(int amount) throws IOException {
 		this.balance -= amount;
 		this.previousTransactionAmount = -amount;
@@ -112,6 +117,7 @@ public class User {
 		appendFile();
 	}
 
+	// getting the previous transaction
 	void getPreviousTransaction() {
 		if (this.previousTransactionAmount > 0) {
 			System.out.println();
@@ -130,6 +136,7 @@ public class User {
 		}
 	}
 
+	// main method that gets run
 	void showMainScreen(int time) throws IOException {
 		try (Scanner scanner = new Scanner(System.in)) {
 			char userOption = '\0';
@@ -181,25 +188,18 @@ public class User {
 			} else {
 				continueWriting();
 			}
-			System.out.println("________________________________________________________");
-			System.out.println();
-			System.out.println("How can we help you today?");
-			System.out.println();
-			System.out.println("A. See my account balance");
-			System.out.println();
-			System.out.println("B. Deposit into my account");
-			System.out.println();
-			System.out.println("C. Withdraw from my account");
-			System.out.println();
-			System.out.println("D. See my previous transaction");
-			System.out.println();
-			System.out.println("E. Exit");
 
 			while (userOption != 'E') {
-				System.out.println();
 				System.out.println("________________________________________________________");
 				System.out.println();
 				System.out.println("Which would you like to do?");
+				System.out.println();
+				System.out.println("A. See my account balance");
+				System.out.println("B. Deposit into my account");
+				System.out.println("C. Withdraw from my account");
+				System.out.println("D. See my previous transaction");
+				System.out.println("E. Exit");
+				System.out.println("________________________________________________________");
 				System.out.println();
 
 				userOption = Character.toUpperCase(scanner.next().charAt(0));
@@ -298,14 +298,17 @@ public class User {
 		}
 	}
 
+	// creating the initial file from the game
 	public void makeInitialFileFromGame() throws IOException {
 		FileWriter writer = new FileWriter("/Users/dongh/OneDrive/Desktop/history.txt");
-		writer.write("ATM simulator history of the user " + this.name + "\n");
-		writer.write("User ID of " + this.name + " is " + this.userID);
-		writer.write("\nThe user's password " + this.name + " is " + this.password);
+		writer.write("ATM simulator history of the user " + this.name + ":\n");
+		writer.write("User ID: " + this.userID);
+		writer.write("\nPassword: " + this.password + "\n\n");
 		writer.close();
 	}
 
+	// if the user chooses to play from the existing account, the file will append
+	// from existing file
 	private void continueWriting() throws IOException {
 		File file = new File("/Users/dongh/OneDrive/Desktop/history.txt");
 		String fileContent = "";
@@ -317,10 +320,11 @@ public class User {
 		}
 
 		FileWriter writer = new FileWriter("/Users/dongh/OneDrive/Desktop/history.txt");
-		writer.append(fileContent + "\nUser " + this.name + " used the ATM simulator again\n");
+		writer.append(fileContent + "\nUser used the ATM simulator again\n");
 		writer.close();
 	}
 
+	// every action (deposits and withdrawls) will be appended into the text file
 	public void appendFile() throws IOException {
 		File file = new File("/Users/dongh/OneDrive/Desktop/history.txt");
 
@@ -332,12 +336,13 @@ public class User {
 			}
 
 			FileWriter writer = new FileWriter("/Users/dongh/OneDrive/Desktop/history.txt");
-			writer.append(fileContent + "\nTransaction " + this.numTransaction + ": " + this.previousTransactionAction
-					+ " of $" + Math.abs(previousTransactionAmount) + ", balance is $" + this.balance);
+			writer.append(fileContent + "Transaction " + this.numTransaction + ": " + this.previousTransactionAction
+					+ " of $" + Math.abs(previousTransactionAmount) + ", balance: $" + this.balance);
 			writer.close();
 		}
 	}
 
+	// when the user exits with an e, it will close the action
 	public void endFile() throws IOException {
 		File file = new File("/Users/dongh/OneDrive/Desktop/history.txt");
 
@@ -349,8 +354,7 @@ public class User {
 			}
 
 			FileWriter writer = new FileWriter("/Users/dongh/OneDrive/Desktop/history.txt");
-			writer.append(fileContent + "\n" + this.name + " finished using ATM service.\nThe final balance is $"
-					+ this.balance);
+			writer.append(fileContent + "Finished using the ATM service. Balance: $" + this.balance);
 			writer.close();
 		}
 	}

@@ -11,13 +11,12 @@ public class Main {
 		// get time of the day
 		int time = getHourOfDay();
 
-		User account1 = new User();
-
-		User account2 = new User(readNameFromFile(), readIDFromFile(), readBalanceFromFile(),
+		User newUser = new User();
+		User existingUser = new User(readNameFromFile(), readIDFromFile(), readBalanceFromFile(),
 				readNumTransactionFromFile(), readPasswordFromFile());
 
 		System.out.println("Would you like to start a new account or use an existing account? [y/n]");
-		System.out.println("Answering y will create a new account and n will use the existing file.");
+		System.out.println("Answering y will create a new account and n will use the existing account.");
 		System.out.println();
 		Scanner scanner = new Scanner(System.in);
 		char yesNo = '\0';
@@ -33,12 +32,14 @@ public class Main {
 		}
 
 		if (yesNo == 'y') {
-			account1.showMainScreen(time);
+			newUser.showMainScreen(time);
 		} else {
-			account2.showMainScreen(time);
+			existingUser.showMainScreen(time);
 		}
+
 	}
 
+	// Returning a real time for a real life like interactions
 	public static int getHourOfDay() {
 
 		Date currentDate = new Date();
@@ -46,6 +47,7 @@ public class Main {
 		return Integer.valueOf(timeFormat.format(currentDate));
 	}
 
+	// Extracting user's name from file
 	public static String readNameFromFile() throws FileNotFoundException {
 
 		File file = new File("/Users/dongh/OneDrive/Desktop/history.txt");
@@ -57,6 +59,7 @@ public class Main {
 		}
 	}
 
+	// Extracting user ID from file
 	public static int readIDFromFile() throws FileNotFoundException {
 
 		File file = new File("/Users/dongh/OneDrive/Desktop/history.txt");
@@ -69,6 +72,7 @@ public class Main {
 		}
 	}
 
+	// Extracting number of account balance from file
 	public static double readBalanceFromFile() throws FileNotFoundException {
 
 		File file = new File("/Users/dongh/OneDrive/Desktop/history.txt");
@@ -85,6 +89,7 @@ public class Main {
 		}
 	}
 
+	// Extracting number of transactions from file
 	public static int readNumTransactionFromFile() throws FileNotFoundException {
 
 		File file = new File("/Users/dongh/OneDrive/Desktop/history.txt");
@@ -103,6 +108,7 @@ public class Main {
 		}
 	}
 
+	// Extracting password from the file
 	public static String readPasswordFromFile() throws FileNotFoundException {
 
 		File file = new File("/Users/dongh/OneDrive/Desktop/history.txt");
@@ -111,7 +117,7 @@ public class Main {
 			String password = scan.nextLine();
 			password = scan.nextLine();
 			password = scan.nextLine();
-			password = password.substring(33, password.length());
+			password = password.substring(10, password.length());
 			return password;
 		}
 	}
