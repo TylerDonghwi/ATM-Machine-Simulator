@@ -11,13 +11,32 @@ public class Main {
 		// get time of the day
 		int time = getHourOfDay();
 
-		// User account1 = new User("Tyler Kim");
+		User account1 = new User();
 
 		User account2 = new User(readNameFromFile(), readIDFromFile(), readBalanceFromFile(),
 				readNumTransactionFromFile(), readPasswordFromFile());
 
-		// account1.showMainScreen(time);
-		account2.showMainScreen(time);
+		System.out.println("Would you like to start a new account or use an existing account? [y/n]");
+		System.out.println("Answering y will create a new account and n will use the existing file.");
+		System.out.println();
+		Scanner scanner = new Scanner(System.in);
+		char yesNo = '\0';
+		while (true) {
+			yesNo = scanner.nextLine().charAt(0);
+			if (yesNo == 'y' || yesNo == 'n') {
+				break;
+			} else {
+				System.out.println();
+				System.out.println("Please answer with 'y' or 'n'");
+				System.out.println();
+			}
+		}
+
+		if (yesNo == 'y') {
+			account1.showMainScreen(time);
+		} else {
+			account2.showMainScreen(time);
+		}
 	}
 
 	public static int getHourOfDay() {
@@ -92,7 +111,7 @@ public class Main {
 			String password = scan.nextLine();
 			password = scan.nextLine();
 			password = scan.nextLine();
-			password = password.substring(28, password.length() - 1);
+			password = password.substring(33, password.length());
 			return password;
 		}
 	}

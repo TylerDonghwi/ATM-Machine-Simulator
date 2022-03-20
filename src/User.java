@@ -14,8 +14,7 @@ public class User {
 	private boolean hasHistory;
 	private String password;
 
-	public User(String name) {
-		this.name = name;
+	public User() {
 		this.userID = (int) (10000000 * Math.random());
 		hasHistory = false;
 	}
@@ -27,6 +26,25 @@ public class User {
 		this.numTransaction = numTransaction;
 		this.hasHistory = true;
 		this.password = password;
+	}
+
+	public void setName() {
+		Scanner scanner = new Scanner(System.in);
+		while (true) {
+			String name = scanner.nextLine();
+			if (!name.contains(" ")) {
+				System.out.println();
+				System.out.println("Please enter your first name and last name");
+				System.out.println();
+			} else if (name.length() <= 30) {
+				this.name = name;
+				break;
+			} else {
+				System.out.println();
+				System.out.println("Your name is too long.");
+				System.out.println();
+			}
+		}
 	}
 
 	public int getNumTransaction() {
@@ -50,7 +68,6 @@ public class User {
 
 	public void enterPassword() {
 		Scanner scanner = new Scanner(System.in);
-		int counter = 0;
 		while (true) {
 			String password = scanner.nextLine();
 			if (password.equals(this.password)) {
@@ -117,29 +134,42 @@ public class User {
 		try (Scanner scanner = new Scanner(System.in)) {
 			char userOption = '\0';
 
-			if (time >= 0 && time <= 11) {
-				System.out.println();
-				System.out.println("Good morning, " + this.name.substring(0, this.name.indexOf(" ")) + "!");
-			} else if (time < 18) {
-				System.out.println();
-				System.out.println("Good afternoon, " + this.name.substring(0, this.name.indexOf(" ")) + "!");
-			} else {
-				System.out.println();
-				System.out.println("Good evening, " + this.name.substring(0, this.name.indexOf(" ")) + "!");
-			}
-			System.out.println("Your user ID is " + this.userID + ".");
-
 			if (this.hasHistory == false) {
 				System.out.println();
-				System.out.println(
-						"This is your first time here, please set your password.\nYour password should be between 8 to 15 digits long.");
+				System.out.println("This is your first time here, to make a new account, please enter your full name.");
+				System.out.println();
+				setName();
+				if (time >= 0 && time <= 11) {
+					System.out.println();
+					System.out.println("Good morning, " + this.name.substring(0, this.name.indexOf(" ")) + "!");
+				} else if (time < 18) {
+					System.out.println();
+					System.out.println("Good afternoon, " + this.name.substring(0, this.name.indexOf(" ")) + "!");
+				} else {
+					System.out.println();
+					System.out.println("Good evening, " + this.name.substring(0, this.name.indexOf(" ")) + "!");
+				}
+				System.out.println("Your user ID is " + this.userID + ".");
+				System.out.println();
+				System.out.println("Please set your password.\nYour password should be between 8 to 15 digits long.");
 				System.out.println();
 				setPassword();
 				System.out.println();
-				System.out.println("Your new password is set");
+				System.out.println("Your new password is set as " + this.password);
 				System.out.println();
 			} else {
+				if (time >= 0 && time <= 11) {
+					System.out.println();
+					System.out.println("Good morning, " + this.name.substring(0, this.name.indexOf(" ")) + "!");
+				} else if (time < 18) {
+					System.out.println();
+					System.out.println("Good afternoon, " + this.name.substring(0, this.name.indexOf(" ")) + "!");
+				} else {
+					System.out.println();
+					System.out.println("Good evening, " + this.name.substring(0, this.name.indexOf(" ")) + "!");
+				}
 				System.out.println();
+				System.out.println("Your user ID is " + this.userID + ".");
 				System.out.println("Welcome back, please enter your pass word to access your bank account.");
 				System.out.println();
 				enterPassword();
@@ -272,7 +302,7 @@ public class User {
 		FileWriter writer = new FileWriter("/Users/dongh/OneDrive/Desktop/history.txt");
 		writer.write("ATM simulator history of the user " + this.name + "\n");
 		writer.write("User ID of " + this.name + " is " + this.userID);
-		writer.write("\nThe user's pin " + this.name + " is " + this.password + ".");
+		writer.write("\nThe user's password " + this.name + " is " + this.password);
 		writer.close();
 	}
 
