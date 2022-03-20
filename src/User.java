@@ -1,3 +1,6 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class User {
@@ -5,11 +8,16 @@ public class User {
 	private String name;
 	private int userID;
 	private double balance;
-	private int previousTransaction;
+	private int previousTransactionAmount;
+	private String previousTransactionAction;
 
 	public User(String name) {
 		this.name = name;
-		this.userID = (int) ((int) 10000000 * Math.random());
+		this.userID = (int) (10000000 * Math.random());
+	}
+
+	public int getUserID() {
+		return userID;
 	}
 
 	void checkBalance() {
@@ -19,14 +27,16 @@ public class User {
 		System.out.println();
 	}
 
-	void deposit(int amount) {
+	void deposit(int amount) throws IOException {
 		if (amount > 0) {
 			this.balance += amount;
-			this.previousTransaction = amount;
+			this.previousTransactionAmount = amount;
+			this.previousTransactionAction = "Deposit";
 			System.out.println();
 			System.out.println("Deposited $" + amount);
 			System.out.printf("Balance: $%.2f", this.balance);
 			System.out.println();
+			appendFile();
 		} else {
 			System.out.println();
 			System.out.println("The money is invalid");
@@ -37,7 +47,7 @@ public class User {
 		}
 	}
 
-	void withdrawl(int amount) {
+	void withdrawl(int amount) throws IOException {
 		if (this.balance == 0) {
 			System.out.println();
 			System.out.println("Your account doesn't have enough balace to withdraw money");
@@ -46,12 +56,14 @@ public class User {
 			System.out.println();
 		} else if (amount > 0 && this.balance >= amount) {
 			this.balance -= amount;
-			this.previousTransaction = -amount;
+			this.previousTransactionAmount = -amount;
+			this.previousTransactionAction = "Withdrawl";
 			System.out.println();
 			System.out.println("Withdrew $" + amount);
 			System.out.printf("Balance: $%.2f", this.balance);
 			System.out.println();
 			System.out.println();
+			appendFile();
 		} else if (amount > 0) {
 			System.out.println();
 			System.out.println("Not enough balance");
@@ -69,13 +81,13 @@ public class User {
 	}
 
 	void getPreviousTransaction() {
-		if (this.previousTransaction > 0) {
+		if (this.previousTransactionAmount > 0) {
 			System.out.println();
-			System.out.println("Deposited $" + previousTransaction);
+			System.out.println("Deposited $" + previousTransactionAmount + ", your balance is " + this.balance);
 			System.out.println();
-		} else if (this.previousTransaction < 0) {
+		} else if (this.previousTransactionAmount < 0) {
 			System.out.println();
-			System.out.println("Withdrawn $" + -previousTransaction);
+			System.out.println("Withdrawn $" + -previousTransactionAmount + ", your balance is " + this.balance);
 			System.out.println();
 		} else {
 			System.out.println();
@@ -84,10 +96,19 @@ public class User {
 		}
 	}
 
-	void showMainScreen() {
+	void showMainScreen(int time) throws IOException {
 		try (Scanner scanner = new Scanner(System.in)) {
+			makeInitialFileFromGame();
+
 			char userOption = '\0';
-			System.out.println("Kia ora, " + this.name + "!");
+
+			if (time >= 0 && time <= 11) {
+				System.out.println("Good morning, " + this.name.substring(0, this.name.indexOf(" ")) + "!");
+			} else if (time < 18) {
+				System.out.println("Good afternoon, " + this.name.substring(0, this.name.indexOf(" ")) + "!");
+			} else {
+				System.out.println("Good evening, " + this.name.substring(0, this.name.indexOf(" ")) + "!");
+			}
 			System.out.println("Your user ID is " + this.userID + ".");
 			System.out.println("How can we help you today?");
 			System.out.println();
@@ -141,6 +162,7 @@ public class User {
 				case 'E':
 					System.out.println();
 					System.out.println("Thank you using our service! Have a wonderful day!");
+					endFile();
 					break;
 				default:
 					System.out.println();
@@ -150,4 +172,45 @@ public class User {
 			}
 		}
 	}
+
+	public void makeInitialFileFromGame() throws IOException {
+		FileWriter writer = new FileWriter("/Users/dongh/OneDrive/Desktop/history.txt");
+		writer.write("ATM simulator history of the user " + this.name + "\n");
+		writer.write("User ID of " + this.name + " is " + this.userID);
+		writer.close();
+	}
+
+	public void appendFile() throws IOException {
+		File file = new File("/Users/dongh/OneDrive/Desktop/history.txt");
+
+		try (Scanner scan = new Scanner(file)) {
+			String fileContent = "";
+
+			while (scan.hasNextLine()) {
+				fileContent = fileContent.concat(scan.nextLine() + "\n");
+			}
+
+			FileWriter writer = new FileWriter("/Users/dongh/OneDrive/Desktop/history.txt");
+			writer.append(fileContent + "\nTransaction: " + this.previousTransactionAction + " of "
+					+ previousTransactionAmount);
+			writer.close();
+		}
+	}
+
+	public void endFile() throws IOException {
+		File file = new File("/Users/dongh/OneDrive/Desktop/history.txt");
+
+		try (Scanner scan = new Scanner(file)) {
+			String fileContent = "";
+
+			while (scan.hasNextLine()) {
+				fileContent = fileContent.concat(scan.nextLine() + "\n");
+			}
+
+			FileWriter writer = new FileWriter("/Users/dongh/OneDrive/Desktop/history.txt");
+			writer.append(fileContent + "\n" + this.name + " finished using ATM service");
+			writer.close();
+		}
+	}
+
 }
