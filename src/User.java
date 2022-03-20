@@ -10,14 +10,25 @@ public class User {
 	private double balance;
 	private int previousTransactionAmount;
 	private String previousTransactionAction;
+	private int numTransaction;
+	private boolean hasHistory;
 
 	public User(String name) {
 		this.name = name;
 		this.userID = (int) (10000000 * Math.random());
+		hasHistory = false;
 	}
 
-	public int getUserID() {
-		return userID;
+	public User(String name, int userID, double balance, int numTransaction) {
+		this.name = name;
+		this.userID = userID;
+		this.balance = balance;
+		this.numTransaction = numTransaction;
+		hasHistory = true;
+	}
+
+	public int getNumTransaction() {
+		return this.numTransaction;
 	}
 
 	void checkBalance() {
@@ -36,6 +47,7 @@ public class User {
 			System.out.println("Deposited $" + amount);
 			System.out.printf("Balance: $%.2f", this.balance);
 			System.out.println();
+			this.numTransaction++;
 			appendFile();
 		} else {
 			System.out.println();
@@ -63,6 +75,7 @@ public class User {
 			System.out.printf("Balance: $%.2f", this.balance);
 			System.out.println();
 			System.out.println();
+			this.numTransaction++;
 			appendFile();
 		} else if (amount > 0) {
 			System.out.println();
@@ -98,7 +111,11 @@ public class User {
 
 	void showMainScreen(int time) throws IOException {
 		try (Scanner scanner = new Scanner(System.in)) {
-			makeInitialFileFromGame();
+			if (this.hasHistory == false) {
+				makeInitialFileFromGame();
+			} else {
+				continueWriting();
+			}
 
 			char userOption = '\0';
 
@@ -180,6 +197,21 @@ public class User {
 		writer.close();
 	}
 
+	private void continueWriting() throws IOException {
+		File file = new File("/Users/dongh/OneDrive/Desktop/history.txt");
+		String fileContent = "";
+
+		try (Scanner scan = new Scanner(file)) {
+			while (scan.hasNextLine()) {
+				fileContent = fileContent.concat(scan.nextLine() + "\n");
+			}
+		}
+
+		FileWriter writer = new FileWriter("/Users/dongh/OneDrive/Desktop/history.txt");
+		writer.append(fileContent + "\nUser " + this.name + " used the ATM simulator again\n");
+		writer.close();
+	}
+
 	public void appendFile() throws IOException {
 		File file = new File("/Users/dongh/OneDrive/Desktop/history.txt");
 
@@ -191,8 +223,8 @@ public class User {
 			}
 
 			FileWriter writer = new FileWriter("/Users/dongh/OneDrive/Desktop/history.txt");
-			writer.append(fileContent + "\nTransaction: " + this.previousTransactionAction + " of "
-					+ previousTransactionAmount);
+			writer.append(fileContent + "\nTransaction " + this.numTransaction + ": " + this.previousTransactionAction
+					+ " of $" + Math.abs(previousTransactionAmount) + ", balance is $" + this.balance);
 			writer.close();
 		}
 	}
@@ -208,7 +240,8 @@ public class User {
 			}
 
 			FileWriter writer = new FileWriter("/Users/dongh/OneDrive/Desktop/history.txt");
-			writer.append(fileContent + "\n" + this.name + " finished using ATM service");
+			writer.append(fileContent + "\n" + this.name + " finished using ATM service.\nThe final balance is $"
+					+ this.balance);
 			writer.close();
 		}
 	}
