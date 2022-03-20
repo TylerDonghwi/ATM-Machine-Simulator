@@ -9,12 +9,13 @@ public class Main {
 
 	public static void main(String[] args) throws IOException {
 
-		// User account1 = new User("Tyler Kim");
+		User account1 = new User("Tyler Kim");
 		int time = getHourOfDay();
 
-		User account2 = new User(readNameFromFile(), readIDFromFile(), readBalanceFromFile(),
-				readNumTransactionFromFile());
-		account2.showMainScreen(time);
+		// User account1 = new User(readNameFromFile(), readIDFromFile(),
+		// readBalanceFromFile(),
+		// readNumTransactionFromFile());
+		account1.showMainScreen(time);
 	}
 
 	public static int getHourOfDay() {

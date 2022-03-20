@@ -39,58 +39,28 @@ public class User {
 	}
 
 	void deposit(int amount) throws IOException {
-		if (amount > 0) {
-			this.balance += amount;
-			this.previousTransactionAmount = amount;
-			this.previousTransactionAction = "Deposit";
-			System.out.println();
-			System.out.println("Deposited $" + amount);
-			System.out.printf("Balance: $%.2f", this.balance);
-			System.out.println();
-			this.numTransaction++;
-			appendFile();
-		} else {
-			System.out.println();
-			System.out.println("The money is invalid");
-			System.out.printf("Balance: $%.2f", this.balance);
-			System.out.println();
-			System.out.println("How much would you like to deposit?");
-			System.out.println();
-		}
+		this.balance += amount;
+		this.previousTransactionAmount = amount;
+		this.previousTransactionAction = "Deposit";
+		System.out.println();
+		System.out.println("Deposited $" + amount);
+		System.out.printf("Balance: $%.2f", this.balance);
+		System.out.println();
+		this.numTransaction++;
+		appendFile();
+
 	}
 
 	void withdrawl(int amount) throws IOException {
-		if (this.balance == 0) {
-			System.out.println();
-			System.out.println("Your account doesn't have enough balace to withdraw money");
-			System.out.printf("Balance: $%.2f", this.balance);
-			System.out.println();
-			System.out.println();
-		} else if (amount > 0 && this.balance >= amount) {
-			this.balance -= amount;
-			this.previousTransactionAmount = -amount;
-			this.previousTransactionAction = "Withdrawl";
-			System.out.println();
-			System.out.println("Withdrew $" + amount);
-			System.out.printf("Balance: $%.2f", this.balance);
-			System.out.println();
-			System.out.println();
-			this.numTransaction++;
-			appendFile();
-		} else if (amount > 0) {
-			System.out.println();
-			System.out.println("Not enough balance");
-			System.out.printf("Balance: $%.2f", this.balance);
-			System.out.println();
-			System.out.println("How much would you like to withdraw?");
-		} else {
-			System.out.println();
-			System.out.println("The money is invalid");
-			System.out.printf("Balance: $%.2f", this.balance);
-			System.out.println();
-			System.out.println("How much would you like to withdraw?");
-			System.out.println();
-		}
+		this.balance -= amount;
+		this.previousTransactionAmount = -amount;
+		this.previousTransactionAction = "Withdrawl";
+		System.out.println();
+		System.out.println("Withdrew $" + amount);
+		System.out.printf("Balance: $%.2f", this.balance);
+		System.out.println();
+		this.numTransaction++;
+		appendFile();
 	}
 
 	void getPreviousTransaction() {
@@ -153,24 +123,65 @@ public class User {
 					checkBalance();
 					break;
 				case 'B':
-					System.out.println();
-					System.out.println("How much would you like to deposit?");
-					System.out.println();
 					int depoAmount = 0;
-					while (depoAmount <= 0) {
-						depoAmount = scanner.nextInt();
-						deposit(depoAmount);
+					while (true) {
+						try {
+							System.out.println();
+							System.out.println("How much would you like to deposit?");
+							System.out.println();
+							depoAmount = Integer.parseInt(scanner.next());
+							if (depoAmount > 0) {
+								deposit(depoAmount);
+								break;
+							} else {
+								System.out.println();
+								System.out
+										.println("Money can not be negative, please try again with a positive value.");
+								System.out.println();
+							}
+						} catch (NumberFormatException e) {
+							System.out.println();
+							System.out.println("Invalid format of money, try again.");
+							System.out.println();
+						}
 					}
 					break;
 				case 'C':
-					System.out.println();
-					System.out.println("How much would you like to withdraw?");
-					System.out.println();
 					int withAmount = -1;
-					int currentBalance = (int) this.balance;
-					while (withAmount < 0 || (withAmount > currentBalance && currentBalance > 0)) {
-						withAmount = scanner.nextInt();
-						withdrawl(withAmount);
+					while (true) {
+						try {
+							if (this.balance == 0) {
+								System.out.println();
+								System.out.println("Your account doesn't have enough balace to withdraw money");
+								System.out.printf("Balance: $%.2f", this.balance);
+								System.out.println();
+								break;
+							}
+
+							System.out.println();
+							System.out.println("How much would you like to withdraw?");
+							System.out.println();
+							withAmount = Integer.parseInt(scanner.next());
+
+							if (withAmount > 0 && this.balance >= withAmount) {
+								withdrawl(withAmount);
+								break;
+							} else if (withAmount > 0) {
+								System.out.println();
+								System.out.println("Not enough balance");
+								System.out.printf("Balance: $%.2f", this.balance);
+								System.out.println();
+							} else {
+								System.out.println();
+								System.out
+										.println("Money can not be negative, please try again with a positive value.");
+								System.out.printf("Balance: $%.2f", this.balance);
+								System.out.println();
+							}
+						} catch (NumberFormatException e) {
+							System.out.println();
+							System.out.println("Invalid format of money, try again.");
+						}
 					}
 					break;
 				case 'D':
