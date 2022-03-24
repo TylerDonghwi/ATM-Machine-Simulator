@@ -11,32 +11,67 @@ public class Main {
 		// get time of the day
 		int time = getHourOfDay();
 
-		User newUser = new User();
-		User existingUser = new User(readNameFromFile(), readIDFromFile(), readBalanceFromFile(),
-				readNumTransactionFromFile(), readPasswordFromFile());
-
-		System.out.println("Would you like to start a new account or use an existing account? [y/n]");
-		System.out.println("Answering y will create a new account and n will use the existing account.");
+		System.out.println("Would you like to start a new account or use an existing account? [new/existing]");
 		System.out.println();
 		Scanner scanner = new Scanner(System.in);
-		char yesNo = '\0';
+		String input = "";
 		while (true) {
-			yesNo = scanner.nextLine().charAt(0);
-			if (yesNo == 'y' || yesNo == 'n') {
+			input = scanner.nextLine().toLowerCase();
+			if (input.equals("new") || input.equals("existing")) {
 				break;
 			} else {
 				System.out.println();
-				System.out.println("Please answer with 'y' or 'n'");
+				System.out.println("Please answer with 'new' or 'existing' without any spaces");
 				System.out.println();
 			}
 		}
 
-		if (yesNo == 'y') {
+		if (input.equals("new")) {
+			User newUser = new User();
 			newUser.showMainScreen(time);
 		} else {
-			existingUser.showMainScreen(time);
+			System.out.println();
+			System.out.println("What is your name?");
+			System.out.println();
+			String name;
+			while (true) {
+				name = scanner.nextLine();
+				if (!name.contains(" ")) {
+					System.out.println();
+					System.out.println("Please enter your first name and last name");
+					System.out.println();
+				} else if (name.length() <= 30) {
+					break;
+				} else {
+					System.out.println();
+					System.out.println("Your name is too long.");
+					System.out.println();
+				}
+			}
+			String nameNoSpace = getNameWithoutSpace(name);
+
+			try {
+				User existingUser = new User(name, readIDFromFile(nameNoSpace), readBalanceFromFile(nameNoSpace),
+						readNumTransactionFromFile(nameNoSpace), readPasswordFromFile(nameNoSpace));
+				existingUser.showMainScreen(time);
+			} catch (java.io.FileNotFoundException e) {
+				System.out.println();
+				System.out.println("File does not exist for user ");
+				System.out.println("A new account will be created");
+				System.out.println("_________________________________________________________________________________");
+				User newUser = new User();
+				newUser.showMainScreen(time);
+			} catch (Exception e) {
+				System.out.println("You suck");
+			}
+
 		}
 
+	}
+
+	// returns the name without spaces to create a file
+	private static String getNameWithoutSpace(String name) {
+		return name.replaceAll("\\s+", "");
 	}
 
 	// Returning a real time for a real life like interactions
@@ -47,22 +82,10 @@ public class Main {
 		return Integer.valueOf(timeFormat.format(currentDate));
 	}
 
-	// Extracting user's name from file
-	public static String readNameFromFile() throws FileNotFoundException {
-
-		File file = new File("/Users/dongh/OneDrive/Desktop/history.txt");
-		try (Scanner scan = new Scanner(file)) {
-
-			String name = scan.nextLine();
-			name = name.substring(34, name.length());
-			return name;
-		}
-	}
-
 	// Extracting user ID from file
-	public static int readIDFromFile() throws FileNotFoundException {
+	public static int readIDFromFile(String name) throws FileNotFoundException {
 
-		File file = new File("/Users/dongh/OneDrive/Desktop/history.txt");
+		File file = new File("/Users/dongh/OneDrive/Desktop/history" + name + ".txt");
 		try (Scanner scan = new Scanner(file)) {
 
 			String text = scan.nextLine();
@@ -73,9 +96,9 @@ public class Main {
 	}
 
 	// Extracting number of account balance from file
-	public static double readBalanceFromFile() throws FileNotFoundException {
+	public static double readBalanceFromFile(String name) throws FileNotFoundException {
 
-		File file = new File("/Users/dongh/OneDrive/Desktop/history.txt");
+		File file = new File("/Users/dongh/OneDrive/Desktop/history" + name + ".txt");
 		try (Scanner scan = new Scanner(file)) {
 
 			Double balance = 0.0;
@@ -90,9 +113,9 @@ public class Main {
 	}
 
 	// Extracting number of transactions from file
-	public static int readNumTransactionFromFile() throws FileNotFoundException {
+	public static int readNumTransactionFromFile(String name) throws FileNotFoundException {
 
-		File file = new File("/Users/dongh/OneDrive/Desktop/history.txt");
+		File file = new File("/Users/dongh/OneDrive/Desktop/history" + name + ".txt");
 		try (Scanner scan = new Scanner(file)) {
 
 			String text = "";
@@ -109,9 +132,9 @@ public class Main {
 	}
 
 	// Extracting password from the file
-	public static String readPasswordFromFile() throws FileNotFoundException {
+	public static String readPasswordFromFile(String name) throws FileNotFoundException {
 
-		File file = new File("/Users/dongh/OneDrive/Desktop/history.txt");
+		File file = new File("/Users/dongh/OneDrive/Desktop/history" + name + ".txt");
 		try (Scanner scan = new Scanner(file)) {
 
 			String password = scan.nextLine();

@@ -50,6 +50,11 @@ public class User {
 		}
 	}
 
+	// returns the name without spaces to create a file
+	private String getNameWithoutSpace() {
+		return this.name.replaceAll("\\s+", "");
+	}
+
 	// for a new account, setting a password
 	public void setPassword() {
 		Scanner scanner = new Scanner(System.in);
@@ -300,7 +305,7 @@ public class User {
 
 	// creating the initial file from the game
 	public void makeInitialFileFromGame() throws IOException {
-		FileWriter writer = new FileWriter("/Users/dongh/OneDrive/Desktop/history.txt");
+		FileWriter writer = new FileWriter("/Users/dongh/OneDrive/Desktop/history" + getNameWithoutSpace() + ".txt");
 		writer.write("ATM simulator history of the user " + this.name + ":\n");
 		writer.write("User ID: " + this.userID);
 		writer.write("\nPassword: " + this.password + "\n\n");
@@ -310,7 +315,7 @@ public class User {
 	// if the user chooses to play from the existing account, the file will append
 	// from existing file
 	private void continueWriting() throws IOException {
-		File file = new File("/Users/dongh/OneDrive/Desktop/history.txt");
+		File file = new File("/Users/dongh/OneDrive/Desktop/history" + getNameWithoutSpace() + ".txt");
 		String fileContent = "";
 
 		try (Scanner scan = new Scanner(file)) {
@@ -319,14 +324,14 @@ public class User {
 			}
 		}
 
-		FileWriter writer = new FileWriter("/Users/dongh/OneDrive/Desktop/history.txt");
+		FileWriter writer = new FileWriter("/Users/dongh/OneDrive/Desktop/history" + getNameWithoutSpace() + ".txt");
 		writer.append(fileContent + "\nUser used the ATM simulator again\n");
 		writer.close();
 	}
 
 	// every action (deposits and withdrawls) will be appended into the text file
 	public void appendFile() throws IOException {
-		File file = new File("/Users/dongh/OneDrive/Desktop/history.txt");
+		File file = new File("/Users/dongh/OneDrive/Desktop/history" + getNameWithoutSpace() + ".txt");
 
 		try (Scanner scan = new Scanner(file)) {
 			String fileContent = "";
@@ -335,7 +340,8 @@ public class User {
 				fileContent = fileContent.concat(scan.nextLine() + "\n");
 			}
 
-			FileWriter writer = new FileWriter("/Users/dongh/OneDrive/Desktop/history.txt");
+			FileWriter writer = new FileWriter(
+					"/Users/dongh/OneDrive/Desktop/history" + getNameWithoutSpace() + ".txt");
 			writer.append(fileContent + "Transaction " + this.numTransaction + ": " + this.previousTransactionAction
 					+ " of $" + Math.abs(previousTransactionAmount) + ", balance: $" + this.balance);
 			writer.close();
@@ -344,8 +350,7 @@ public class User {
 
 	// when the user exits with an e, it will close the action
 	public void endFile() throws IOException {
-		File file = new File("/Users/dongh/OneDrive/Desktop/history.txt");
-
+		File file = new File("/Users/dongh/OneDrive/Desktop/history" + getNameWithoutSpace() + ".txt");
 		try (Scanner scan = new Scanner(file)) {
 			String fileContent = "";
 
@@ -353,7 +358,8 @@ public class User {
 				fileContent = fileContent.concat(scan.nextLine() + "\n");
 			}
 
-			FileWriter writer = new FileWriter("/Users/dongh/OneDrive/Desktop/history.txt");
+			FileWriter writer = new FileWriter(
+					"/Users/dongh/OneDrive/Desktop/history" + getNameWithoutSpace() + ".txt");
 			writer.append(fileContent + "Finished using the ATM service. Balance: $" + this.balance);
 			writer.close();
 		}
