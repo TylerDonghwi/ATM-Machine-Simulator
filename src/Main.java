@@ -11,10 +11,13 @@ public class Main {
 		// get time of the day
 		int time = getHourOfDay();
 
+		// Asking user if they are a new customer or an existing customer
 		System.out.println("Would you like to start a new account or use an existing account? [new/existing]");
 		System.out.println();
 		Scanner scanner = new Scanner(System.in);
 		String input = "";
+
+		// Ensuring that desired input is received from user
 		while (true) {
 			input = scanner.nextLine().toLowerCase();
 			if (input.equals("new") || input.equals("existing")) {
@@ -26,14 +29,17 @@ public class Main {
 			}
 		}
 
+		// if the user is new make a new account and start simulation
 		if (input.equals("new")) {
 			User newUser = new User();
 			newUser.showMainScreen(time);
+			// otherwise ask user their name
 		} else {
 			System.out.println();
 			System.out.println("What is your name?");
 			System.out.println();
 			String name;
+			// ensuring that the name is in the right format
 			while (true) {
 				name = scanner.nextLine();
 				if (!name.contains(" ")) {
@@ -51,10 +57,12 @@ public class Main {
 			String nameNoSpace = getNameWithoutSpace(name);
 
 			try {
+				// extract information from the user file simulate the account.
 				User existingUser = new User(name, readIDFromFile(nameNoSpace), readBalanceFromFile(nameNoSpace),
 						readNumTransactionFromFile(nameNoSpace), readPasswordFromFile(nameNoSpace));
 				existingUser.showMainScreen(time);
 			} catch (java.io.FileNotFoundException e) {
+				// if the user doesn't exist, create a new account
 				System.out.println();
 				System.out.println("File does not exist for user ");
 				System.out.println("A new account will be created");

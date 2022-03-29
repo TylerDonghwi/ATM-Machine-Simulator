@@ -325,7 +325,7 @@ public class User {
 		}
 
 		FileWriter writer = new FileWriter("/Users/dongh/OneDrive/Desktop/history" + getNameWithoutSpace() + ".txt");
-		writer.append(fileContent + "\nUser used the ATM simulator again\n");
+		writer.append(fileContent + "\nUser used the ATM simulator again, balance: $" + this.balance + "\n");
 		writer.close();
 	}
 
