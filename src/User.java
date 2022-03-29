@@ -101,11 +101,12 @@ public class User {
 		this.balance = Math.floor(this.balance * 100.0) / 100.0;
 		this.previousTransactionAmount = depoAmount;
 		this.previousTransactionAction = "Deposit";
+		this.numTransaction++;
 		System.out.println();
 		System.out.println("Deposited $" + depoAmount);
+		giveInterest();
 		System.out.printf("Balance: $%.2f", this.balance);
 		System.out.println();
-		this.numTransaction++;
 		appendFile();
 
 	}
@@ -116,11 +117,13 @@ public class User {
 		this.balance = Math.floor(this.balance * 100.0) / 100.0;
 		this.previousTransactionAmount = -withAmount;
 		this.previousTransactionAction = "Withdrawl";
+		this.numTransaction++;
 		System.out.println();
 		System.out.println("Withdrew $" + withAmount);
+		giveInterest();
 		System.out.printf("Balance: $%.2f", this.balance);
 		System.out.println();
-		this.numTransaction++;
+
 		appendFile();
 	}
 
@@ -140,6 +143,15 @@ public class User {
 			System.out.println();
 			System.out.println("No previous transactions.");
 			System.out.println();
+		}
+	}
+
+	void giveInterest() {
+		if (this.numTransaction % 5 == 0) {
+			this.balance *= 1.01;
+			this.balance = Math.floor(this.balance * 100.0) / 100.0;
+			System.out.println(
+					"This is your " + this.numTransaction + "th transaction! 1% interest added to your account!");
 		}
 	}
 
@@ -347,8 +359,14 @@ public class User {
 
 			FileWriter writer = new FileWriter(
 					"/Users/dongh/OneDrive/Desktop/ATM game file/history" + getNameWithoutSpace() + ".txt");
-			writer.append(fileContent + "Transaction " + this.numTransaction + ": " + this.previousTransactionAction
-					+ " of $" + Math.abs(previousTransactionAmount) + ", balance: $" + this.balance);
+			if (this.numTransaction % 5 == 0) {
+				writer.append(fileContent + "Transaction " + this.numTransaction + ": " + this.previousTransactionAction
+						+ " of $" + Math.abs(previousTransactionAmount) + " + 1% interest, balance: $" + this.balance);
+			} else {
+				writer.append(fileContent + "Transaction " + this.numTransaction + ": " + this.previousTransactionAction
+						+ " of $" + Math.abs(previousTransactionAmount) + ", balance: $" + this.balance);
+			}
+
 			writer.close();
 		}
 	}
