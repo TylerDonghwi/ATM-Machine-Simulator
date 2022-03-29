@@ -8,7 +8,7 @@ public class User {
 	private String name;
 	private int userID;
 	private double balance;
-	private int previousTransactionAmount;
+	private double previousTransactionAmount;
 	private String previousTransactionAction;
 	private int numTransaction;
 	private boolean hasHistory;
@@ -96,12 +96,13 @@ public class User {
 	}
 
 	// making a deposit
-	void deposit(int amount) throws IOException {
-		this.balance += amount;
-		this.previousTransactionAmount = amount;
+	void deposit(double depoAmount) throws IOException {
+		this.balance += depoAmount;
+		this.balance = Math.floor(this.balance * 100.0) / 100.0;
+		this.previousTransactionAmount = depoAmount;
 		this.previousTransactionAction = "Deposit";
 		System.out.println();
-		System.out.println("Deposited $" + amount);
+		System.out.println("Deposited $" + depoAmount);
 		System.out.printf("Balance: $%.2f", this.balance);
 		System.out.println();
 		this.numTransaction++;
@@ -110,12 +111,13 @@ public class User {
 	}
 
 	// making a withdrawl
-	void withdrawl(int amount) throws IOException {
-		this.balance -= amount;
-		this.previousTransactionAmount = -amount;
+	void withdrawl(double withAmount) throws IOException {
+		this.balance -= withAmount;
+		this.balance = Math.floor(this.balance * 100.0) / 100.0;
+		this.previousTransactionAmount = -withAmount;
 		this.previousTransactionAction = "Withdrawl";
 		System.out.println();
-		System.out.println("Withdrew $" + amount);
+		System.out.println("Withdrew $" + withAmount);
 		System.out.printf("Balance: $%.2f", this.balance);
 		System.out.println();
 		this.numTransaction++;
@@ -215,15 +217,16 @@ public class User {
 					checkBalance();
 					break;
 				case 'B':
-					int depoAmount = 0;
+					double depoAmount = 0;
 					while (true) {
 						try {
 							System.out.println();
 							System.out.println("How much would you like to deposit?");
 							System.out.println();
-							depoAmount = Integer.parseInt(scanner.next());
+							depoAmount = Double.parseDouble(scanner.next());
 							if (depoAmount > 0) {
-								deposit(depoAmount);
+
+								deposit(Math.floor(depoAmount * 100.0) / 100.0);
 								break;
 							} else if (depoAmount == 0) {
 								System.out.println();
@@ -244,7 +247,7 @@ public class User {
 					}
 					break;
 				case 'C':
-					int withAmount = -1;
+					double withAmount = -1;
 					while (true) {
 						try {
 							if (this.balance == 0) {
@@ -258,10 +261,10 @@ public class User {
 							System.out.println();
 							System.out.println("How much would you like to withdraw?");
 							System.out.println();
-							withAmount = Integer.parseInt(scanner.next());
+							withAmount = Double.parseDouble(scanner.next());
 
 							if (withAmount > 0 && this.balance >= withAmount) {
-								withdrawl(withAmount);
+								withdrawl(Math.floor(withAmount * 100.0) / 100.0);
 								break;
 							} else if (withAmount > 0) {
 								System.out.println();
@@ -305,7 +308,8 @@ public class User {
 
 	// creating the initial file from the game
 	public void makeInitialFileFromGame() throws IOException {
-		FileWriter writer = new FileWriter("/Users/dongh/OneDrive/Desktop/history" + getNameWithoutSpace() + ".txt");
+		FileWriter writer = new FileWriter(
+				"/Users/dongh/OneDrive/Desktop/ATM game file/history" + getNameWithoutSpace() + ".txt");
 		writer.write("ATM simulator history of the user " + this.name + ":\n");
 		writer.write("User ID: " + this.userID);
 		writer.write("\nPassword: " + this.password + "\n\n");
@@ -315,7 +319,7 @@ public class User {
 	// if the user chooses to play from the existing account, the file will append
 	// from existing file
 	private void continueWriting() throws IOException {
-		File file = new File("/Users/dongh/OneDrive/Desktop/history" + getNameWithoutSpace() + ".txt");
+		File file = new File("/Users/dongh/OneDrive/Desktop/ATM game file/history" + getNameWithoutSpace() + ".txt");
 		String fileContent = "";
 
 		try (Scanner scan = new Scanner(file)) {
@@ -324,14 +328,15 @@ public class User {
 			}
 		}
 
-		FileWriter writer = new FileWriter("/Users/dongh/OneDrive/Desktop/history" + getNameWithoutSpace() + ".txt");
+		FileWriter writer = new FileWriter(
+				"/Users/dongh/OneDrive/Desktop/ATM game file/history" + getNameWithoutSpace() + ".txt");
 		writer.append(fileContent + "\nUser used the ATM simulator again, balance: $" + this.balance + "\n");
 		writer.close();
 	}
 
 	// every action (deposits and withdrawls) will be appended into the text file
 	public void appendFile() throws IOException {
-		File file = new File("/Users/dongh/OneDrive/Desktop/history" + getNameWithoutSpace() + ".txt");
+		File file = new File("/Users/dongh/OneDrive/Desktop/ATM game file/history" + getNameWithoutSpace() + ".txt");
 
 		try (Scanner scan = new Scanner(file)) {
 			String fileContent = "";
@@ -341,7 +346,7 @@ public class User {
 			}
 
 			FileWriter writer = new FileWriter(
-					"/Users/dongh/OneDrive/Desktop/history" + getNameWithoutSpace() + ".txt");
+					"/Users/dongh/OneDrive/Desktop/ATM game file/history" + getNameWithoutSpace() + ".txt");
 			writer.append(fileContent + "Transaction " + this.numTransaction + ": " + this.previousTransactionAction
 					+ " of $" + Math.abs(previousTransactionAmount) + ", balance: $" + this.balance);
 			writer.close();
@@ -350,7 +355,7 @@ public class User {
 
 	// when the user exits with an e, it will close the action
 	public void endFile() throws IOException {
-		File file = new File("/Users/dongh/OneDrive/Desktop/history" + getNameWithoutSpace() + ".txt");
+		File file = new File("/Users/dongh/OneDrive/Desktop/ATM game file/history" + getNameWithoutSpace() + ".txt");
 		try (Scanner scan = new Scanner(file)) {
 			String fileContent = "";
 
@@ -359,7 +364,7 @@ public class User {
 			}
 
 			FileWriter writer = new FileWriter(
-					"/Users/dongh/OneDrive/Desktop/history" + getNameWithoutSpace() + ".txt");
+					"/Users/dongh/OneDrive/Desktop/ATM game file/history" + getNameWithoutSpace() + ".txt");
 			writer.append(fileContent + "Finished using the ATM service. Balance: $" + this.balance);
 			writer.close();
 		}

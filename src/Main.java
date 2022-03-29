@@ -69,8 +69,6 @@ public class Main {
 				System.out.println("_________________________________________________________________________________");
 				User newUser = new User();
 				newUser.showMainScreen(time);
-			} catch (Exception e) {
-				System.out.println("You suck");
 			}
 
 		}
@@ -93,7 +91,7 @@ public class Main {
 	// Extracting user ID from file
 	public static int readIDFromFile(String name) throws FileNotFoundException {
 
-		File file = new File("/Users/dongh/OneDrive/Desktop/history" + name + ".txt");
+		File file = new File("/Users/dongh/OneDrive/Desktop/ATM game file/history" + name + ".txt");
 		try (Scanner scan = new Scanner(file)) {
 
 			String text = scan.nextLine();
@@ -106,7 +104,7 @@ public class Main {
 	// Extracting number of account balance from file
 	public static double readBalanceFromFile(String name) throws FileNotFoundException {
 
-		File file = new File("/Users/dongh/OneDrive/Desktop/history" + name + ".txt");
+		File file = new File("/Users/dongh/OneDrive/Desktop/ATM game file/history" + name + ".txt");
 		try (Scanner scan = new Scanner(file)) {
 
 			Double balance = 0.0;
@@ -123,7 +121,7 @@ public class Main {
 	// Extracting number of transactions from file
 	public static int readNumTransactionFromFile(String name) throws FileNotFoundException {
 
-		File file = new File("/Users/dongh/OneDrive/Desktop/history" + name + ".txt");
+		File file = new File("/Users/dongh/OneDrive/Desktop/ATM game file/history" + name + ".txt");
 		try (Scanner scan = new Scanner(file)) {
 
 			String text = "";
@@ -142,7 +140,7 @@ public class Main {
 	// Extracting password from the file
 	public static String readPasswordFromFile(String name) throws FileNotFoundException {
 
-		File file = new File("/Users/dongh/OneDrive/Desktop/history" + name + ".txt");
+		File file = new File("/Users/dongh/OneDrive/Desktop/ATM game file/history" + name + ".txt");
 		try (Scanner scan = new Scanner(file)) {
 
 			String password = scan.nextLine();
