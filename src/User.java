@@ -373,6 +373,13 @@ public class User {
 						a = false;
 					}
 
+					if (name.toLowerCase().equals(this.name.toLowerCase())) {
+						System.out.println();
+						System.out.println("You can't transfer to yourself");
+						System.out.println();
+						a = false;
+					}
+
 					while (a) {
 						try {
 							System.out.println();
