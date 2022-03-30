@@ -64,7 +64,8 @@ public class Main {
 				System.out.println();
 				System.out.println("File does not exist for user ");
 				System.out.println("A new account will be created");
-				System.out.println("_________________________________________________________________________________");
+				System.out
+						.println("__________________________________________________________________________________");
 				User newUser = new User();
 				newUser.showMainScreen(time);
 			}

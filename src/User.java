@@ -17,7 +17,7 @@ public class User {
 
 	// new account will have no history with a randomly generated userID.
 	public User() {
-		this.userID = (int) (10000000 * Math.random());
+		this.userID = (int) ((Math.random() * (99999999 - 10000000)) + 10000000);
 	}
 
 	// existing account will have instances extracted from the existing file
@@ -81,7 +81,7 @@ public class User {
 				break;
 			} else {
 				System.out.println();
-				System.out.println("wrong password");
+				System.out.println("wrong password, try again");
 				System.out.println();
 			}
 		}
@@ -136,10 +136,11 @@ public class User {
 		this.numTransaction++;
 		System.out.println();
 		System.out.println("Transfered $" + transferAmount + " to " + name);
+		giveInterest();
 		System.out.printf("Balance: $%.2f", this.balance);
 		System.out.println();
 
-		appendFile();
+		appendFile(name);
 	}
 
 	// getting the previous transaction
@@ -233,7 +234,8 @@ public class User {
 			}
 
 			while (userOption != 'F') {
-				System.out.println("________________________________________________________");
+				System.out
+						.println("__________________________________________________________________________________");
 				System.out.println();
 				System.out.println("Which would you like to do?");
 				System.out.println();
@@ -243,7 +245,8 @@ public class User {
 				System.out.println("D. Transfer money into another account");
 				System.out.println("E. See my previous transaction");
 				System.out.println("F. Exit");
-				System.out.println("________________________________________________________");
+				System.out
+						.println("__________________________________________________________________________________");
 				System.out.println();
 
 				userOption = Character.toUpperCase(scanner.next().charAt(0));
@@ -329,124 +332,102 @@ public class User {
 				case 'D':
 
 					double transferAmount = -1;
-					while (true) {
 
-						if (this.balance == 0) {
-							System.out.println();
-							System.out.println("Your account doesn't have enough balace to transfer money");
-							System.out.printf("Balance: $%.2f", this.balance);
-							System.out.println();
-							break;
-						}
-						// Ask the user who they are going to transfer the money to (make sure that the
-						// name format is correct)
+					if (this.balance == 0) {
 						System.out.println();
-						System.out.println("Who's account would you like to transfer?");
-						String name;
-						int userId2;
-						String nameNoSpace;
+						System.out.println("Your account doesn't have enough balace to transfer money");
+						System.out.printf("Balance: $%.2f", this.balance);
+						System.out.println();
+						break;
+					}
+					// Ask the user who they are going to transfer the money to (make sure that the
+					// name format is correct)
+					System.out.println();
+					System.out.println("Who's account would you like to transfer?");
+					String name;
+					int userId2 = 0;
+					String nameNoSpace;
+					boolean a = true;
 
-						while (true) {
-							while (true) {
-								name = scanner.nextLine();
-								if (!name.contains(" ")) {
-									System.out.println("Please enter their first name and last name");
-									System.out.println();
-								} else if (name.length() <= 30) {
-									break;
-								} else {
-									System.out.println();
-									System.out.println("Name is too long.");
-									System.out.println();
-								}
-							}
-							nameNoSpace = name.replaceAll("\\s+", "");
-							try {
-								userId2 = readIDFromFile(nameNoSpace);
-								break;
-							} catch (java.io.FileNotFoundException e) {
-								// if the user doesn't exist, create a new account
-								System.out.println();
-								System.out.println("File does not exist for user, enter a correct name ");
-								System.out.println();
-							}
-						}
-
-						while (true) {
-							try {
-								System.out.println();
-								System.out.println("What is their User ID?");
-								System.out.println();
-								int userId1 = scanner.nextInt();
-								if (userId1 == userId2) {
-									break;
-								} else if (userId1 > 99999999) {
-									System.out.println();
-									System.out.println("Your input is too long.");
-									System.out.println();
-								} else {
-									System.out.println();
-									System.out.println("The User ID does not match, please try again");
-									System.out.println();
-								}
-							} catch (NumberFormatException e) {
-								System.out.println();
-								System.out.println("Invalid format of User ID, try again.");
-							}
-						}
-
-						while (true) {
+					while (true) {
+						name = scanner.nextLine();
+						if (!name.contains(" ")) {
+							System.out.println("Please enter their first name and last name");
 							System.out.println();
-							System.out.println("How much would you like to transfer?");
+						} else if (name.length() <= 30) {
+							break;
+						} else {
 							System.out.println();
-							transferAmount = Double.parseDouble(scanner.next());
-							try {
-								if (transferAmount > 0 && this.balance >= transferAmount) {
-									transfer(Math.floor(transferAmount * 100.0) / 100.0, name);
-
-									File file = new File("/Users/dongh/OneDrive/Desktop/ATM game file/history"
-											+ nameNoSpace + ".txt");
-
-									Scanner scan = new Scanner(file);
-									String fileContent = "";
-
-									while (scan.hasNextLine()) {
-										fileContent = fileContent.concat(scan.nextLine() + "\n");
-									}
-
-									FileWriter writer = new FileWriter(
-											"/Users/dongh/OneDrive/Desktop/ATM game file/history" + nameNoSpace
-													+ ".txt");
-
-									writer.append(fileContent + "Transfer of $" + transferAmount + "from " + this.name
-											+ ", balance: $" + (transferAmount + readBalanceFromFile(nameNoSpace)));
-
-									writer.close();
-
-									break;
-								} else if (transferAmount > 0) {
-									System.out.println();
-									System.out.println("Not enough balance");
-									System.out.printf("Balance: $%.2f", this.balance);
-									System.out.println();
-								} else if (transferAmount == 0) {
-									System.out.println();
-									System.out.println("You can not transfer $0, please try again with a valid value");
-									System.out.printf("Balance: $%.2f", this.balance);
-									System.out.println();
-								} else {
-									System.out.println();
-									System.out.println(
-											"Money can not be negative, please try again with a positive value.");
-									System.out.printf("Balance: $%.2f", this.balance);
-									System.out.println();
-								}
-							} catch (NumberFormatException e) {
-								System.out.println();
-								System.out.println("Invalid format of money, try again.");
-							}
+							System.out.println("Name is too long.");
+							System.out.println();
 						}
 					}
+					nameNoSpace = name.replaceAll("\\s", "");
+					try {
+						userId2 = readIDFromFile(nameNoSpace);
+					} catch (java.io.FileNotFoundException e) {
+						// if the user doesn't exist, create a new account
+						System.out.println();
+						System.out.println("Account does not exist for user");
+						System.out.println();
+						a = false;
+					}
+
+					while (a) {
+						try {
+							System.out.println();
+							System.out.println("What is their User ID?");
+							System.out.println();
+							int userId1 = scanner.nextInt();
+							if (userId1 == userId2) {
+								break;
+							} else if (userId1 > 99999999) {
+								System.out.println();
+								System.out.println("Your input is too long.");
+								System.out.println();
+							} else {
+								System.out.println();
+								System.out.println("The User ID does not match, please try again");
+								System.out.println();
+							}
+						} catch (NumberFormatException e) {
+							System.out.println();
+							System.out.println("Invalid format of User ID, try again.");
+						}
+					}
+
+					while (a) {
+						System.out.println();
+						System.out.println("How much would you like to transfer?");
+						System.out.println();
+						transferAmount = Double.parseDouble(scanner.next());
+						if (transferAmount > 0 && this.balance >= transferAmount) {
+							transfer(Math.floor(transferAmount * 100.0) / 100.0, name);
+
+							double balance = readBalanceFromFile(nameNoSpace);
+							balance += transferAmount;
+
+							appendTransFile(nameNoSpace, transferAmount, balance);
+
+							break;
+						} else if (transferAmount > 0) {
+							System.out.println();
+							System.out.println("Not enough balance");
+							System.out.printf("Balance: $%.2f", this.balance);
+							System.out.println();
+						} else if (transferAmount == 0) {
+							System.out.println();
+							System.out.println("You can not transfer $0, please try again with a valid value");
+							System.out.printf("Balance: $%.2f", this.balance);
+							System.out.println();
+						} else {
+							System.out.println();
+							System.out.println("Money can not be negative, please try again with a positive value.");
+							System.out.printf("Balance: $%.2f", this.balance);
+							System.out.println();
+						}
+					}
+
 					break;
 				case 'E':
 					getPreviousTransaction();
@@ -471,7 +452,8 @@ public class User {
 				"/Users/dongh/OneDrive/Desktop/ATM game file/history" + getNameWithoutSpace() + ".txt");
 		writer.write("ATM simulator history of the user " + this.name + ":\n");
 		writer.write("User ID: " + this.userID);
-		writer.write("\nPassword: " + this.password + "\n\n");
+		writer.write("\nPassword: " + this.password);
+		writer.write("\nBalance: $" + this.balance + "\n\n");
 		writer.close();
 	}
 
@@ -513,6 +495,50 @@ public class User {
 				writer.append(fileContent + "Transaction " + this.numTransaction + ": " + this.previousTransactionAction
 						+ " of $" + Math.abs(previousTransactionAmount) + ", Balance: $" + this.balance);
 			}
+
+			writer.close();
+		}
+	}
+
+	public void appendFile(String name) throws IOException {
+		File file = new File("/Users/dongh/OneDrive/Desktop/ATM game file/history" + getNameWithoutSpace() + ".txt");
+
+		try (Scanner scan = new Scanner(file)) {
+			String fileContent = "";
+
+			while (scan.hasNextLine()) {
+				fileContent = fileContent.concat(scan.nextLine() + "\n");
+			}
+
+			FileWriter writer = new FileWriter(
+					"/Users/dongh/OneDrive/Desktop/ATM game file/history" + getNameWithoutSpace() + ".txt");
+			if (this.numTransaction % 5 == 0) {
+				writer.append(fileContent + "Transaction " + this.numTransaction + ": " + this.previousTransactionAction
+						+ " of $" + Math.abs(previousTransactionAmount) + " to " + name + ", + 1% interest, Balance: $"
+						+ this.balance);
+			} else {
+				writer.append(fileContent + "Transaction " + this.numTransaction + ": " + this.previousTransactionAction
+						+ " of $" + Math.abs(previousTransactionAmount) + " to " + name + ", Balance: $"
+						+ this.balance);
+			}
+
+			writer.close();
+		}
+	}
+
+	public void appendTransFile(String name, Double transferAmount, Double balance) throws IOException {
+		File file = new File("/Users/dongh/OneDrive/Desktop/ATM game file/history" + name + ".txt");
+
+		try (Scanner scan = new Scanner(file)) {
+			String fileContent = "";
+
+			while (scan.hasNextLine()) {
+				fileContent = fileContent.concat(scan.nextLine() + "\n");
+			}
+
+			FileWriter writer = new FileWriter("/Users/dongh/OneDrive/Desktop/ATM game file/history" + name + ".txt");
+			writer.append(
+					fileContent + "Transfer of $" + transferAmount + " from " + this.name + ", Balance: $" + balance);
 
 			writer.close();
 		}
