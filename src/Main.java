@@ -1,5 +1,3 @@
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -8,7 +6,6 @@ import java.util.Scanner;
 public class Main {
 
 	public static void main(String[] args) throws IOException {
-		// get time of the day
 		int time = getHourOfDay();
 
 		// Asking user if they are a new customer or an existing customer
@@ -58,8 +55,9 @@ public class Main {
 
 			try {
 				// extract information from the user file simulate the account.
-				User existingUser = new User(name, readIDFromFile(nameNoSpace), readBalanceFromFile(nameNoSpace),
-						readNumTransactionFromFile(nameNoSpace), readPasswordFromFile(nameNoSpace));
+				User existingUser = new User(name, User.readIDFromFile(nameNoSpace),
+						User.readBalanceFromFile(nameNoSpace), User.readNumTransactionFromFile(nameNoSpace),
+						User.readPasswordFromFile(nameNoSpace));
 				existingUser.showMainScreen(time);
 			} catch (java.io.FileNotFoundException e) {
 				// if the user doesn't exist, create a new account
@@ -88,66 +86,4 @@ public class Main {
 		return Integer.valueOf(timeFormat.format(currentDate));
 	}
 
-	// Extracting user ID from file
-	public static int readIDFromFile(String name) throws FileNotFoundException {
-
-		File file = new File("/Users/dongh/OneDrive/Desktop/ATM game file/history" + name + ".txt");
-		try (Scanner scan = new Scanner(file)) {
-
-			String text = scan.nextLine();
-			text = scan.nextLine();
-			int userID = Integer.parseInt(text.replaceAll("[\\D]", ""));
-			return userID;
-		}
-	}
-
-	// Extracting number of account balance from file
-	public static double readBalanceFromFile(String name) throws FileNotFoundException {
-
-		File file = new File("/Users/dongh/OneDrive/Desktop/ATM game file/history" + name + ".txt");
-		try (Scanner scan = new Scanner(file)) {
-
-			Double balance = 0.0;
-			String text = "";
-			while (scan.hasNextLine()) {
-				text = scan.nextLine();
-			}
-			balance = (double) Integer.parseInt(text.replaceAll("[\\D]", "")) * 0.1;
-
-			return balance;
-		}
-	}
-
-	// Extracting number of transactions from file
-	public static int readNumTransactionFromFile(String name) throws FileNotFoundException {
-
-		File file = new File("/Users/dongh/OneDrive/Desktop/ATM game file/history" + name + ".txt");
-		try (Scanner scan = new Scanner(file)) {
-
-			String text = "";
-			int counter = 0;
-			while (scan.hasNextLine()) {
-				text = scan.nextLine();
-				if (text.contains("Transaction")) {
-					counter++;
-				}
-			}
-
-			return counter;
-		}
-	}
-
-	// Extracting password from the file
-	public static String readPasswordFromFile(String name) throws FileNotFoundException {
-
-		File file = new File("/Users/dongh/OneDrive/Desktop/ATM game file/history" + name + ".txt");
-		try (Scanner scan = new Scanner(file)) {
-
-			String password = scan.nextLine();
-			password = scan.nextLine();
-			password = scan.nextLine();
-			password = password.substring(10, password.length());
-			return password;
-		}
-	}
 }
