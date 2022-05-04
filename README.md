@@ -1,2 +1,9 @@
 # ATM-Machine-Simulator
-Command line user interactive ATM simulator, it is able to create game files and it is possible to do banking operations between accounts. It is for now complete, but I might add more features later
+<ul>
+  <li>Command line user interactive ATM simulator, designed and created from scratch
+  </li>
+   <li>Applies Object-oriented programming principles
+  </li>
+   <li>Players are able to create their own user file and simulate banking operations like deposit, withdrawl, transfer between other users.
+  </li>
+</ul>
