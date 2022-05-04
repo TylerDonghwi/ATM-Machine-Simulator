@@ -545,7 +545,7 @@ public class User {
 
 			FileWriter writer = new FileWriter("/Users/dongh/OneDrive/Desktop/ATM game file/history" + name + ".txt");
 			writer.append(
-					fileContent + "Transfer of $" + transferAmount + " from " + this.name + ", Balance: $" + balance);
+					fileContent + "\nTransfer of $" + transferAmount + " from " + this.name + ", Balance: $" + balance);
 
 			writer.close();
 		}
