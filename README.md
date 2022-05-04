@@ -9,6 +9,7 @@
 </ul>
 
 <hr>
+
 ##### Creating a new user<br>
 <img width=50% src="https://github.com/TylerDonghwi/ATM-Machine-Simulator/blob/main/new%20user.png" alt=New User>
 
