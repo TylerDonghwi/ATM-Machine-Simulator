@@ -9,11 +9,14 @@
 </ul>
 
 <hr>
-Creating a new user<br>
+##### Creating a new user<br>
 <img width=50% src="https://github.com/TylerDonghwi/ATM-Machine-Simulator/blob/main/new%20user.png" alt=New User>
 
-Making a transfer between users<br>
+##### Using the existing game file<br>
+<img width=50% src="https://github.com/TylerDonghwi/ATM-Machine-Simulator/blob/main/existing%20user.png" alt=Existing User>
+
+##### Making a transfer between users<br>
 <img width=50% src="https://github.com/TylerDonghwi/ATM-Machine-Simulator/blob/main/Transfer1.png" alt=Transferring in the command line>
 
-Game files created after transfer between users<br>
+##### Game files created after transfer between users<br>
 <img width=100% src="https://github.com/TylerDonghwi/ATM-Machine-Simulator/blob/main/Transfer2.png" alt=Files of players after transfer between users>
